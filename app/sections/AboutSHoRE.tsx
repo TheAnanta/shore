@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function AboutShoreSection() {
   return (
@@ -17,9 +18,9 @@ export default function AboutShoreSection() {
           </p>
           
           <div className="flex gap-4">
-            <button className="px-8 py-3 bg-white text-black font-bold uppercase hover:bg-gray-200 transition-colors rounded-full">
+            <Link href="/login" className="px-8 py-3 bg-white text-black font-bold uppercase hover:bg-gray-200 transition-colors rounded-full">
               Buy Tickets
-            </button>
+            </Link>
             <button className="px-8 py-3 border border-white text-white font-bold uppercase hover:bg-white/10 transition-colors rounded-full">
               Watch Video
             </button>
@@ -31,18 +32,17 @@ export default function AboutShoreSection() {
            <div className="relative h-[500px] w-full">
               {/* This is a simplified representation of the curved path with circles */}
               <div className="absolute top-0 right-0 w-full h-full">
-                 {/* Placeholder for the curved path graphic */}
-                 <div className="absolute top-1/4 right-1/4 w-64 h-64 border-4 border-dashed border-gray-700 rounded-full opacity-50"></div>
-                 
                  {/* Circular Image Placeholders */}
-                 <div className="absolute top-10 right-20 w-24 h-24 bg-gray-800 rounded-full border-4 border-gray-600 flex items-center justify-center text-xs text-center">Img 1</div>
-                 <div className="absolute top-32 right-40 w-28 h-28 bg-gray-800 rounded-full border-4 border-gray-600 flex items-center justify-center text-xs text-center">Img 2</div>
-                 <div className="absolute top-60 right-20 w-32 h-32 bg-gray-800 rounded-full border-4 border-gray-600 flex items-center justify-center text-xs text-center">Img 3</div>
-                 <div className="absolute bottom-10 right-10 w-24 h-24 bg-gray-800 rounded-full border-4 border-gray-600 flex items-center justify-center text-xs text-center">Img 4</div>
-                 
+                 <div className="relative z-10 -translate-x-6">
+                 <div className="absolute top-12 md:top-0 -right-4 md:left-20 w-28 h-28 bg-gray-800 rounded-full border-6 border-black flex items-center justify-center text-xs text-center">Img 1</div>
+                 <div className="absolute top-8 md:top-12 left-40 md:left-34 w-32 h-32 bg-gray-800 rounded-full border-6 border-black flex items-center justify-center text-xs text-center">Img 2</div>
+                 <div className="absolute top-20 md:top-32 left-16 md:left-46 w-36 h-36 bg-gray-800 rounded-full border-6 border-black flex items-center justify-center text-xs text-center">Img 3</div>
+                 <div className="absolute top-48 md:top-60 left-6 md:left-36 w-40 h-40 bg-gray-800 rounded-full border-6 border-black flex items-center justify-center text-xs text-center">Img 4</div>
+                 <div className="absolute top-80 left-16 md:left-8 w-44 h-44 bg-gray-800 rounded-full border-6 border-black flex items-center justify-center text-xs text-center">Img 5</div>
+                 </div>
                  {/* Mascot Placeholder */}
-                 <div className="absolute bottom-0 right-1/3 w-40 h-40 flex items-center justify-center">
-                    <span className="text-yellow-500 font-bold">[Mascot]</span>
+                 <div className="absolute bottom-0 md:bottom-[2em] left-1/3 -right-24 h-40 flex items-center justify-center">
+                    <img src="/images/gitfin-dancing-on-rock.png"/>
                  </div>
               </div>
            </div>

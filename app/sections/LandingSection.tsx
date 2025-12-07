@@ -59,7 +59,7 @@ export default function LandingSection(){
                 <img className="h-10" src={'/images/gitam-logo.svg'}/>
                 <div className="w-full"/>
                 <img className="h-12" src={'/images/gitam-partners-logos.svg'} />
-                <Link href={'/login'} className="hidden md:blocktext-white px-8 py-3 font-bold rounded-full ml-8 text-sm bg-white/20 border-white border">Login</Link>
+                <Link href={'/login'} className="hidden md:block text-white px-8 py-3 font-bold rounded-full ml-8 text-sm bg-white/20 border-white border">Login</Link>
             </div>
             <h3 className="mt-20 md:mt-6 text-[1rem] md:text-2xl font-extrabold uppercase">Unity in Diversity | 30th Jan - 1st Feb</h3>
             <img src="/images/landing/shore-logo.svg" className="lg:h-[45vh] h-auto px-6 lg:px-[unset]"/>
