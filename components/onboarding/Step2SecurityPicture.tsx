@@ -4,6 +4,9 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { MdCameraAlt, MdCheck, MdRefresh } from "react-icons/md";
 
+import { uploadImage } from "@/lib/firebase";
+import { updateProfile } from "@/lib/api";
+
 export default function Step2SecurityPicture() {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -11,6 +14,7 @@ export default function Step2SecurityPicture() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [image, setImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const startCamera = async () => {
     try {
@@ -50,11 +54,32 @@ export default function Step2SecurityPicture() {
     startCamera();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!image) return;
-    // TODO: Upload image to Firebase
-    console.log("Step 2 Image Captured");
-    router.push("/onboarding?step=3");
+    setUploading(true);
+    try {
+      // Convert base64 to blob
+      const res = await fetch(image);
+      const blob = await res.blob();
+      const file = new File([blob], "security_picture.jpg", { type: "image/jpeg" });
+
+      // Upload to Firebase
+      const email = sessionStorage.getItem("onboarding_email");
+      if (!email) throw new Error("No email found in session");
+
+      const url = await uploadImage(file, `security/${email}_${Date.now()}.jpg`);
+      console.log("Uploaded Security Pic:", url);
+
+      // Update Profile
+      await updateProfile(email, { security_picture: url });
+      
+      router.push("/onboarding?step=3");
+    } catch (error) {
+      console.error("Failed to upload/update", error);
+      alert("Failed to save. Please try again.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (

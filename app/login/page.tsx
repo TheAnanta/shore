@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { FaUserGraduate, FaUser } from "react-icons/fa";
-import { mockAuth } from "@/lib/auth";
+import { loginGitam } from "@/lib/api";
+import CountdownModal from "../components/CountdownModal";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,23 +13,38 @@ export default function LoginPage() {
   const [rollNumber, setRollNumber] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showCountdown, setShowCountdown] = useState(true); // Default to true to prevent flash
+
+  useEffect(() => {
+    const targetDate = new Date('2025-12-10T20:00:00');
+    if (new Date() >= targetDate) {
+        setShowCountdown(false);
+    }
+  }, []);
+
+  if (showCountdown) {
+    return <CountdownModal isOpen={true} onClose={() => setShowCountdown(false)} blocking={true} />;
+  }
 
   const handleGitamLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const user = await mockAuth.loginGitamite(rollNumber, password);
-      // In a real app, store token/user in context/cookie
-      console.log("Logged in:", user);
-      if (user.isOnboarded) {
-        router.push("/dashboard");
-      } else {
-        // For GITAMites, skip step 1 (basic info) as it's fetched from DB? 
-        // Requirement says: "ask him to sign up... which goes to the onboarding page but directly to step 2"
-        router.push("/onboarding?step=2");
+      const response = await loginGitam({ roll_number: rollNumber, password });
+      console.log("Logged in:", response);
+      
+      // Store email for subsequent steps
+      if (response.details?.email) {
+        sessionStorage.setItem("onboarding_email", response.details.email);
       }
+
+      // Check if onboarded (assuming response has this info, or we default to step 2)
+      // The prompt implies we go to step 2 for new users.
+      // We'll assume if they have a profile but not fully onboarded, we go to step 2.
+      router.push("/onboarding?step=2");
     } catch (error) {
       console.error("Login failed", error);
+      alert("Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }

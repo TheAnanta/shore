@@ -4,10 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MdCloudUpload, MdCheckCircle, MdDelete } from "react-icons/md";
 
+import { uploadImage } from "@/lib/firebase";
+
 export default function Step3IDCard() {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -23,11 +26,26 @@ export default function Step3IDCard() {
     setPreview(null);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!file) return;
-    // TODO: Upload to Firebase Storage
-    console.log("Step 3 File Uploaded:", file.name);
-    router.push("/onboarding?step=4");
+    setUploading(true);
+    try {
+      const email = sessionStorage.getItem("onboarding_email");
+      if (!email) throw new Error("No email found in session");
+
+      const url = await uploadImage(file, `id_cards/${email}_${Date.now()}_${file.name}`);
+      console.log("Uploaded ID Card:", url);
+      
+      // Note: Not updating profile with ID card URL as per current instructions, 
+      // but uploading it to storage.
+      
+      router.push("/onboarding?step=4");
+    } catch (error) {
+      console.error("Failed to upload", error);
+      alert("Failed to upload. Please try again.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSkip = () => {

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MdPerson, MdSchool, MdEmail, MdNumbers, MdBusiness, MdLocationCity, MdCalendarToday } from "react-icons/md";
 
+import { createProfile } from "@/lib/api";
+
 export default function Step1BasicInfo() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -14,17 +16,35 @@ export default function Step1BasicInfo() {
     campus: "",
     year: "",
     email: "",
+    role_slug: "guest", // Default or derived
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Call API to update profile
-    console.log("Step 1 Data:", formData);
-    router.push("/onboarding?step=2");
+    try {
+      const response = await createProfile({
+        name: formData.name,
+        email: formData.email,
+        roll_number: formData.rollNumber,
+        institution: formData.institution,
+        department: formData.department,
+        campus: formData.campus,
+        year: formData.year,
+        display_picture: "", // TODO: Add DP upload if needed in Step 1
+        role_slug: formData.role_slug,
+      });
+      console.log("Step 1 Data Saved:", response);
+      
+      sessionStorage.setItem("onboarding_email", formData.email);
+      router.push("/onboarding?step=2");
+    } catch (error) {
+      console.error("Failed to save profile", error);
+      alert("Failed to save profile. Please try again.");
+    }
   };
 
   return (

@@ -3,19 +3,40 @@
 import { useRouter } from "next/navigation";
 import { MdVerifiedUser } from "react-icons/md";
 
+import { updateProfile } from "@/lib/api";
+
 export default function Step4DigiLocker() {
   const router = useRouter();
 
-  const handleDigiLockerConnect = () => {
-    // TODO: Integrate DigiLocker API
-    // This would typically redirect to DigiLocker auth page
-    console.log("Connecting to DigiLocker...");
-    
-    // Simulate success after delay
-    setTimeout(() => {
-        console.log("DigiLocker Connected");
-        router.push("/dashboard");
-    }, 1500);
+  const handleDigiLockerConnect = async () => {
+    try {
+      console.log("Connecting to DigiLocker...");
+      // Simulate DigiLocker API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      const email = sessionStorage.getItem("onboarding_email");
+      if (!email) throw new Error("No email found in session");
+
+      // Mock Data from DigiLocker
+      const digilockerData = {
+        name: "Verified Name",
+        dob: "2000-01-01",
+        gender: "M",
+        aadhar_last_4: "1234"
+      };
+
+      await updateProfile(email, {
+        digilocker_verified: true,
+        digilocker_data: digilockerData,
+        // Add other fields if they are being updated from DigiLocker
+      });
+
+      console.log("DigiLocker Connected & Profile Updated");
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("DigiLocker verification failed", error);
+      alert("Verification failed. Please try again.");
+    }
   };
 
   return (
