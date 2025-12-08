@@ -53,13 +53,13 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      const user = await mockAuth.loginGoogle();
-      console.log("Logged in:", user);
-      if (user.isOnboarded) {
-        router.push("/dashboard");
-      } else {
-        router.push("/onboarding?step=1");
-      }
+      // const user = await mockAuth.loginGoogle();
+      // console.log("Logged in:", user);
+      // if (user.isOnboarded) {
+      //   router.push("/dashboard");
+      // } else {
+      //   router.push("/onboarding?step=1");
+      // }
     } catch (error) {
       console.error("Login failed", error);
     } finally {
