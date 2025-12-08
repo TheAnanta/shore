@@ -87,7 +87,7 @@ export default function LaunchCurtain() {
                     className="h-32 md:h-48 w-auto"
                  />
                  <div className="text-white text-center space-y-2">
-                    <p className="text-lg md:text-xl font-light opacity-80">Welcome to Shore '25</p>
+                    <p className="text-lg md:text-xl font-light opacity-80">Welcome to Shore '26</p>
                  </div>
                  <motion.button
                     onClick={handleLaunch}
