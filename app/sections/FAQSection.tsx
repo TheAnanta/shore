@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 export default function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(1);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const faqs = [
     { q: "Where is the venue of SHORE '26?", a: "GITAM Deemed to be University, Visakhapatnam Campus." },
@@ -15,19 +15,24 @@ export default function FAQSection() {
   ];
 
   return (
-    <section className="w-full bg-yellow-500 py-20 text-black">
+    <section className="w-full bg-yellow-500 py-20 text-black relative">
+      <div className="h-64 z-0 absolute w-full bg-linear-to-br from-yellow-600/50 to-yellow-800/50 bottom-0"/>
       <div className="container mx-auto px-4 flex flex-col md:flex-row gap-12">
-        <div className="w-full md:w-1/2">
-           <div className="bg-white rounded-lg p-6 shadow-lg">
-             <h2 className="text-2xl font-bold mb-6 uppercase">Frequently Asked Questions</h2>
+        <div className="w-full md:w-3/4 z-10">
+           <div className="bg-yellow-50 rounded-2xl py-12 shadow-lg">
+             <h2 className="px-12 text-4xl font-bold mb-6 uppercase">Frequently Asked<br/>Questions</h2>
              <div className="space-y-2">
                {faqs.map((faq, index) => (
-                 <div key={index} className="border-b border-gray-200 last:border-0">
+                 <div style={{
+                  backgroundColor: index == openIndex ? "#fff" : "transparent"
+                 }} key={index} className="px-12 border-b border-gray-200 last:border-0">
                    <button 
                      className="w-full text-left py-4 flex justify-between items-center font-medium focus:outline-none"
                      onClick={() => setOpenIndex(openIndex === index ? null : index)}
                    >
-                     <span>{faq.q}</span>
+                     <span style={{
+                      fontWeight: openIndex === index ? "bold" : "normal"
+                     }}>{faq.q}</span>
                      <span className={`transform transition-transform ${openIndex === index ? 'rotate-180' : ''}`}>
                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -35,7 +40,7 @@ export default function FAQSection() {
                      </span>
                    </button>
                    <div className={`overflow-hidden transition-all duration-300 ${openIndex === index ? 'max-h-40 opacity-100 pb-4' : 'max-h-0 opacity-0'}`}>
-                     <p className="text-gray-600 text-sm">{faq.a}</p>
+                     <p className="text-[#2C2C2C]/70 text-sm">{faq.a}</p>
                    </div>
                  </div>
                ))}
@@ -46,7 +51,7 @@ export default function FAQSection() {
             {/* Illustration placeholder */}
              <div className="relative h-64 w-64 md:h-96 md:w-96">
                 <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-2xl">
-                    [Mascot Illustration]
+                    <img src="/images/gitfin-doubtful.png" className="scale-x-100 object-bottom mt-auto"/>
                 </div>
              </div>
         </div>

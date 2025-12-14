@@ -1,7 +1,7 @@
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000";
 
-export async function createProfile(data: any) {
-    const response = await fetch(`${BASE_URL}/auth/profile`, {
+export async function createProfileNonGitamite(data: any) {
+    const response = await fetch(`${BASE_URL}/auth/profile/non-gitamite`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -14,7 +14,7 @@ export async function createProfile(data: any) {
 }
 
 export async function loginGitam(data: { roll_number: string; password?: string }) {
-    const response = await fetch(`${BASE_URL}/auth/gitam/profile`, {
+    const response = await fetch(`${BASE_URL}/auth/profile/gitamite`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -26,24 +26,63 @@ export async function loginGitam(data: { roll_number: string; password?: string 
     return response.json();
 }
 
-export async function updateProfile(email: string, data: any) {
-    const response = await fetch(`${BASE_URL}/auth/patch/${email}`, {
-        method: "PATCH",
+export async function getProfile(uid: string) {
+    const response = await fetch(`${BASE_URL}/auth/profile/${uid}`);
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to get profile");
+    }
+    return response.json();
+}
+
+export async function updateSecurityPicture(uid: string, url: string) {
+    const response = await fetch(`${BASE_URL}/auth/profile/${uid}/security_picture`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ security_picture: url }),
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to update security picture");
+    }
+    return response.json();
+}
+
+export async function updateIdCard(uid: string, url: string) {
+    const response = await fetch(`${BASE_URL}/auth/profile/${uid}/id_card_picture`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_card_picture: url }),
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to update ID card");
+    }
+    return response.json();
+}
+
+export async function updateDigiLocker(uid: string, data: any) {
+    const response = await fetch(`${BASE_URL}/auth/profile/${uid}/digilocker_data`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
     });
     if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update profile");
+        throw new Error(error.message || "Failed to update DigiLocker data");
     }
     return response.json();
 }
 
-export async function getProfile(email: string) {
-    const response = await fetch(`${BASE_URL}/auth/profile/${email}`);
+export async function updateDisplayPicture(uid: string, url: string) {
+    const response = await fetch(`${BASE_URL}/auth/profile/${uid}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ display_picture: url }),
+    });
     if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to get profile");
+        throw new Error(error.message || "Failed to update display picture");
     }
     return response.json();
 }

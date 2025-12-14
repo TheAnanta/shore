@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { MdCloudUpload, MdCheckCircle, MdDelete } from "react-icons/md";
 
 import { uploadImage } from "@/lib/firebase";
+import { updateIdCard } from "@/lib/api";
 
 export default function Step3IDCard() {
   const router = useRouter();
@@ -30,14 +31,13 @@ export default function Step3IDCard() {
     if (!file) return;
     setUploading(true);
     try {
-      const email = sessionStorage.getItem("onboarding_email");
-      if (!email) throw new Error("No email found in session");
+      const uid = sessionStorage.getItem("onboarding_uid");
+      if (!uid) throw new Error("No uid found in session");
 
-      const url = await uploadImage(file, `id_cards/${email}_${Date.now()}_${file.name}`);
+      const url = await uploadImage(file, `id_cards/${uid}_${Date.now()}_${file.name}`);
       console.log("Uploaded ID Card:", url);
       
-      // Note: Not updating profile with ID card URL as per current instructions, 
-      // but uploading it to storage.
+      await updateIdCard(uid, url);
       
       router.push("/onboarding?step=4");
     } catch (error) {

@@ -25,8 +25,8 @@ export default function Home() {
         <PartnersSection />
         <WhatToExpect />
         <FAQSection />
-        {/* <MemoriesSection /> */}
-        {/* <HostsSection /> */}
+        <MemoriesSection />
+        <HostsSection />
         <Footer />
       </main>
     </div>

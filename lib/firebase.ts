@@ -11,10 +11,12 @@ const firebaseConfig = {
 };
 
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
 export const db = getFirestore(app);
+export const auth = getAuth(app);
 
 export async function uploadImage(file: File, path: string): Promise<string> {
     const storageRef = ref(storage, path);

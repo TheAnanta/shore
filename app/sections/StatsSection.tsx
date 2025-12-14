@@ -1,8 +1,9 @@
 export default function StatsSection() {
   return (
-    <section className="w-full bg-red-700 py-12 text-white border-t-4 border-orange-500">
+  
+    <section className="w-full bg-[#4b1611] pb-12 text-white relative">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-red-500/50">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-white/20">
           <div className="flex flex-col items-center">
             <span className="text-3xl md:text-5xl font-bold font-serif">105+</span>
             <span className="text-sm md:text-base uppercase tracking-widest mt-2">Events</span>
@@ -21,6 +22,8 @@ export default function StatsSection() {
           </div>
         </div>
       </div>
+    <div className="w-full right-0 h-8 bg-[#4b1611] -top-12 z-20 border-t-4 border-orange-500/20 absolute"/>
     </section>
+    
   );
 }

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { MdVerifiedUser } from "react-icons/md";
 
-import { updateProfile } from "@/lib/api";
+import { updateDigiLocker } from "@/lib/api";
 
 export default function Step4DigiLocker() {
   const router = useRouter();
@@ -14,8 +14,8 @@ export default function Step4DigiLocker() {
       // Simulate DigiLocker API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      const email = sessionStorage.getItem("onboarding_email");
-      if (!email) throw new Error("No email found in session");
+      const uid = sessionStorage.getItem("onboarding_uid");
+      if (!uid) throw new Error("No uid found in session");
 
       // Mock Data from DigiLocker
       const digilockerData = {
@@ -25,10 +25,9 @@ export default function Step4DigiLocker() {
         aadhar_last_4: "1234"
       };
 
-      await updateProfile(email, {
+      await updateDigiLocker(uid, {
         digilocker_verified: true,
         digilocker_data: digilockerData,
-        // Add other fields if they are being updated from DigiLocker
       });
 
       console.log("DigiLocker Connected & Profile Updated");

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MdPerson, MdSchool, MdEmail, MdNumbers, MdBusiness, MdLocationCity, MdCalendarToday } from "react-icons/md";
 
-import { createProfile } from "@/lib/api";
+import { createProfileNonGitamite } from "@/lib/api";
 
 export default function Step1BasicInfo() {
   const router = useRouter();
@@ -25,8 +25,16 @@ export default function Step1BasicInfo() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const uid = sessionStorage.getItem("onboarding_uid");
+    if (!uid) {
+        alert("Session expired. Please login again.");
+        router.push("/login");
+        return;
+    }
+
     try {
-      const response = await createProfile({
+      const response = await createProfileNonGitamite({
+        firebase_uuid: uid,
         name: formData.name,
         email: formData.email,
         roll_number: formData.rollNumber,
@@ -39,7 +47,6 @@ export default function Step1BasicInfo() {
       });
       console.log("Step 1 Data Saved:", response);
       
-      sessionStorage.setItem("onboarding_email", formData.email);
       router.push("/onboarding?step=2");
     } catch (error) {
       console.error("Failed to save profile", error);

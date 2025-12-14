@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { FaUserGraduate, FaUser } from "react-icons/fa";
-import { loginGitam } from "@/lib/api";
+import { loginGitam, getProfile } from "@/lib/api";
+import { auth } from "@/lib/firebase";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import CountdownModal from "../components/CountdownModal";
 
 export default function LoginPage() {
@@ -33,9 +35,9 @@ export default function LoginPage() {
       const response = await loginGitam({ roll_number: rollNumber, password });
       console.log("Logged in:", response);
       
-      // Store email for subsequent steps
-      if (response.details?.email) {
-        sessionStorage.setItem("onboarding_email", response.details.email);
+      // Store uid for subsequent steps
+      if (response.details?.firebase_uuid) {
+        sessionStorage.setItem("onboarding_uid", response.details.firebase_uuid);
       }
 
       // Check if onboarded (assuming response has this info, or we default to step 2)
@@ -53,13 +55,32 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      // const user = await mockAuth.loginGoogle();
-      // console.log("Logged in:", user);
-      // if (user.isOnboarded) {
-      //   router.push("/dashboard");
-      // } else {
-      //   router.push("/onboarding?step=1");
-      // }
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log("Logged in:", user);
+      
+      sessionStorage.setItem("onboarding_uid", user.uid);
+      sessionStorage.setItem("onboarding_email", user.email || "");
+
+      try {
+        const profile = await getProfile(user.uid);
+        if (profile.status && profile.data) {
+             // User exists
+             if (profile.data.is_verified) {
+                 router.push("/dashboard");
+             } else {
+                 // Check which step they are at? For now just go to dashboard or step 1 if incomplete?
+                 // If they exist but not verified, maybe they need to complete onboarding.
+                 // But for non-gitamite, step 1 creates the profile.
+                 // If profile exists, maybe they are done with step 1.
+                 router.push("/onboarding?step=2");
+             }
+        }
+      } catch (error) {
+        // Profile doesn't exist, go to step 1
+        router.push("/onboarding?step=1");
+      }
     } catch (error) {
       console.error("Login failed", error);
     } finally {

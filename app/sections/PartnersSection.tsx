@@ -8,7 +8,7 @@ export default function PartnersSection() {
   ];
 
   return (
-    <section className="w-full bg-black py-10 text-white overflow-hidden border-t border-zinc-900">
+    <section id="partners" className="w-full bg-black py-10 text-white overflow-hidden border-t border-zinc-900">
       <div className="container mx-auto px-4 text-center mb-8">
         <h2 className="text-2xl font-bold uppercase tracking-widest text-gray-400">Our Partners</h2>
       </div>

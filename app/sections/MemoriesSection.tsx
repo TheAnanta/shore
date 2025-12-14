@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function MemoriesSection() {
   return (
@@ -16,10 +17,11 @@ export default function MemoriesSection() {
           animate={{ x: ["0%", "-50%"] }}
           transition={{ repeat: Infinity, ease: "linear", duration: 40 }}
         >
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div key={`row1-${i}`} className="w-80 h-48 bg-zinc-900 rounded-xl flex-shrink-0 border border-zinc-800 overflow-hidden relative group">
-               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                 <span className="text-sm font-bold">Concert Night 2024</span>
+          {Array.from({ length: 20 }).map((_, i) => (
+            <div key={`row1-${i}`} className="w-80 h-48 bg-zinc-900 rounded-xl shrink-0 border border-zinc-800 overflow-hidden relative group">
+              <Image alt="" width={640} height={384} src={`/images/past-shore-photos/shore_25_${i + 1}.jpg`} className="w-full h-full object-cover"/>
+               <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                 <span className="text-sm font-bold">{i % 2 == 0 ? `SHORe'24` : `SHORe'25`}</span>
                </div>
                <div className="w-full h-full flex items-center justify-center text-zinc-700 font-bold text-4xl bg-zinc-900">
                   {i + 1}
@@ -34,13 +36,32 @@ export default function MemoriesSection() {
           animate={{ x: ["-50%", "0%"] }}
           transition={{ repeat: Infinity, ease: "linear", duration: 45 }}
         >
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div key={`row2-${i}`} className="w-80 h-48 bg-zinc-900 rounded-xl flex-shrink-0 border border-zinc-800 overflow-hidden relative group">
-               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                 <span className="text-sm font-bold">Dance Performance</span>
+          {Array.from({ length: 20 }).map((_, i) => (
+            <div key={`row2-${i}`} className="w-80 h-48 bg-zinc-900 rounded-xl shrink-0 border border-zinc-800 overflow-hidden relative group">
+               <Image alt="" width={640} height={384} src={`/images/past-shore-photos/shore_25_${i + 21}.jpg`} className="w-full h-full object-cover"/>
+               <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                 <span className="text-sm font-bold">{i % 2 == 0 ? `SHORe'24` : `SHORe'25`}</span>
                </div>
                <div className="w-full h-full flex items-center justify-center text-zinc-700 font-bold text-4xl bg-zinc-900">
-                  {i + 11}
+                  {i + 31}
+               </div>
+            </div>
+          ))}
+        </motion.div>
+        {/* Row 1 - Left to Right */}
+        <motion.div 
+          className="flex gap-4 whitespace-nowrap"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ repeat: Infinity, ease: "linear", duration: 40 }}
+        >
+          {Array.from({ length: 20 }).map((_, i) => (
+            <div key={`row1-${i}`} className="w-80 h-48 bg-zinc-900 rounded-xl shrink-0 border border-zinc-800 overflow-hidden relative group">
+              <Image alt="" width={640} height={384} src={`/images/past-shore-photos/shore_25_${i + 41}.jpg`} className="w-full h-full object-cover"/>
+               <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                 <span className="text-sm font-bold">{i % 2 == 0 ? `SHORe'24` : `SHORe'25`}</span>
+               </div>
+               <div className="w-full h-full flex items-center justify-center text-zinc-700 font-bold text-4xl bg-zinc-900">
+                  {i + 1}
                </div>
             </div>
           ))}

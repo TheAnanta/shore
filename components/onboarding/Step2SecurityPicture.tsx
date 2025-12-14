@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { MdCameraAlt, MdCheck, MdRefresh } from "react-icons/md";
 
 import { uploadImage } from "@/lib/firebase";
-import { updateProfile } from "@/lib/api";
+import { updateSecurityPicture } from "@/lib/api";
 
 export default function Step2SecurityPicture() {
   const router = useRouter();
@@ -64,14 +64,14 @@ export default function Step2SecurityPicture() {
       const file = new File([blob], "security_picture.jpg", { type: "image/jpeg" });
 
       // Upload to Firebase
-      const email = sessionStorage.getItem("onboarding_email");
-      if (!email) throw new Error("No email found in session");
+      const uid = sessionStorage.getItem("onboarding_uid");
+      if (!uid) throw new Error("No uid found in session");
 
-      const url = await uploadImage(file, `security/${email}_${Date.now()}.jpg`);
+      const url = await uploadImage(file, `security/${uid}_${Date.now()}.jpg`);
       console.log("Uploaded Security Pic:", url);
 
       // Update Profile
-      await updateProfile(email, { security_picture: url });
+      await updateSecurityPicture(uid, url);
       
       router.push("/onboarding?step=3");
     } catch (error) {
