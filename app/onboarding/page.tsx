@@ -3,8 +3,8 @@
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import Step1BasicInfo from "@/components/onboarding/Step1BasicInfo";
-import Step2SecurityPicture from "@/components/onboarding/Step2SecurityPicture";
-import Step3IDCard from "@/components/onboarding/Step3IDCard";
+import Step3SecurityPicture from "@/components/onboarding/Step3SecurityPicture";
+import Step2IDCard from "@/components/onboarding/Step2IDCard";
 import Step4DigiLocker from "@/components/onboarding/Step4DigiLocker";
 
 function OnboardingSteps() {
@@ -15,9 +15,9 @@ function OnboardingSteps() {
     case 1:
       return <Step1BasicInfo />;
     case 2:
-      return <Step2SecurityPicture />;
+      return <Step2IDCard />;
     case 3:
-      return <Step3IDCard />;
+      return <Step3SecurityPicture />;
     case 4:
       return <Step4DigiLocker />;
     default:

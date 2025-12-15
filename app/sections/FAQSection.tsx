@@ -47,11 +47,11 @@ export default function FAQSection() {
              </div>
            </div>
         </div>
-        <div className="w-full md:w-1/2 flex items-center justify-center">
+        <div className="w-full md:w-1/2 flex items-center justify-center mt-16 md:mt-[unset]">
             {/* Illustration placeholder */}
              <div className="relative h-64 w-64 md:h-96 md:w-96">
                 <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-2xl">
-                    <img src="/images/gitfin-doubtful.png" className="scale-x-100 object-bottom mt-auto"/>
+                    <img src="/images/gitfin-doubtful.png" className="scale-x-100 object-bottom mt-auto -translate-y-36 md:translate-y-[unset] pointer-events-none z-10"/>
                 </div>
              </div>
         </div>

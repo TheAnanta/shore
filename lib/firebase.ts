@@ -12,11 +12,23 @@ const firebaseConfig = {
 
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { getMessaging } from "firebase/messaging/sw";
 
 const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+let messaging;
+
+if (typeof window !== 'undefined' && 'Notification' in window) {
+    try {
+        messaging = getMessaging(app);
+        
+    } catch (err) {
+        console.error("Firebase messaging error:", err);
+    }
+}
+export { messaging };
 
 export async function uploadImage(file: File, path: string): Promise<string> {
     const storageRef = ref(storage, path);

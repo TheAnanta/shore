@@ -5,6 +5,11 @@
   src: url('/fonts/NexaRegular.otf');
 }
 
+.toastBody {
+  font-family: "NexaRegular", sans-serif;
+  color: #10171D;
+  font-size: 0.875rem !important;
+}
 
 :root {
   --background: #ffffff;

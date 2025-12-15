@@ -1,11 +1,23 @@
 "use client";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function PartnersSection() {
-  const partners = [
-    "Google Developers", "Waze", "Uber", "Spotify", "Red Bull", "Coca Cola", 
-    "Amazon", "Microsoft", "Intel", "AMD"
-  ];
+  const [partners, setPartners] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchPartners = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/partner`);
+        const result = await response.json();
+        setPartners(result.data.partners);
+      } catch (error) {
+        console.error("Error fetching partners:", error);
+      }
+    };
+    fetchPartners();
+  }, []);
 
   return (
     <section id="partners" className="w-full bg-black py-10 text-white overflow-hidden border-t border-zinc-900">
@@ -25,7 +37,7 @@ export default function PartnersSection() {
         >
           {[...partners, ...partners, ...partners].map((partner, index) => (
             <span key={index} className="text-2xl font-bold text-zinc-600 hover:text-white transition-colors cursor-pointer">
-              {partner}
+              <Link href={partner.website}>{partner.name}</Link>
             </span>
           ))}
         </motion.div>

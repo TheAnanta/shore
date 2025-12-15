@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { FaUserGraduate, FaUser } from "react-icons/fa";
 import { loginGitam, getProfile } from "@/lib/api";
-import { auth } from "@/lib/firebase";
+import { auth, messaging } from "@/lib/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import CountdownModal from "../components/CountdownModal";
+import { getToken } from "firebase/messaging";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -17,10 +19,20 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [showCountdown, setShowCountdown] = useState(true); // Default to true to prevent flash
 
+
+
+  useEffect(() => {
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        console.log('Notification permission granted.');
+      }
+    });
+  }, []);
+
   useEffect(() => {
     const targetDate = new Date('2025-12-10T20:00:00');
     if (new Date() >= targetDate) {
-        setShowCountdown(false);
+      setShowCountdown(false);
     }
   }, []);
 
@@ -32,21 +44,21 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await loginGitam({ roll_number: rollNumber, password });
+      const response = await loginGitam({ roll_number: rollNumber, password, fcm_token: await getToken(messaging, { vapidKey: "BATu1uBPbu0PNys6M8PDNKpg70QwedX6XmYDCID1pcJQSWOTbld1BqCafSodMdlK3X5KFv2UdXiS55CB1S_wzNQ" }) });
       console.log("Logged in:", response);
-      
+
       // Store uid for subsequent steps
       if (response.details?.firebase_uuid) {
         sessionStorage.setItem("onboarding_uid", response.details.firebase_uuid);
       }
 
-      // Check if onboarded (assuming response has this info, or we default to step 2)
-      // The prompt implies we go to step 2 for new users.
-      // We'll assume if they have a profile but not fully onboarded, we go to step 2.
-      router.push("/onboarding?step=2");
-    } catch (error) {
+      // Check if onboarded (assuming response has this info, or we default to step 3)
+      // The prompt implies we go to step 3 for new users.
+      // We'll assume if they have a profile but not fully onboarded, we go to step 3.
+      router.push("/onboarding?step=3");
+    } catch (error: any) {
       console.error("Login failed", error);
-      alert("Login failed. Please check your credentials.");
+      toast.error(error.message || "Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
@@ -59,30 +71,32 @@ export default function LoginPage() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       console.log("Logged in:", user);
-      
+
       sessionStorage.setItem("onboarding_uid", user.uid);
       sessionStorage.setItem("onboarding_email", user.email || "");
 
       try {
+        console.log("Checking profile for uid:", user.uid);
         const profile = await getProfile(user.uid);
         if (profile.status && profile.data) {
-             // User exists
-             if (profile.data.is_verified) {
-                 router.push("/dashboard");
-             } else {
-                 // Check which step they are at? For now just go to dashboard or step 1 if incomplete?
-                 // If they exist but not verified, maybe they need to complete onboarding.
-                 // But for non-gitamite, step 1 creates the profile.
-                 // If profile exists, maybe they are done with step 1.
-                 router.push("/onboarding?step=2");
-             }
+          // User exists
+          if (profile.data.is_verified) {
+            router.push("/dashboard");
+          } else {
+            // Check which step they are at? For now just go to dashboard or step 1 if incomplete?
+            // If they exist but not verified, maybe they need to complete onboarding.
+            // But for non-gitamite, step 1 creates the profile.
+            // If profile exists, maybe they are done with step 1.
+            router.push("/onboarding?step=2");
+          }
         }
       } catch (error) {
         // Profile doesn't exist, go to step 1
         router.push("/onboarding?step=1");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login failed", error);
+      toast.error(error.message || "Google login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -92,15 +106,15 @@ export default function LoginPage() {
     <div className="min-h-screen bg-black text-white flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full bg-linear-to-br from-red-900/20 to-black z-0" />
-      
-      <motion.div 
+
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md bg-zinc-900/80 backdrop-blur-md p-8 rounded-2xl border border-zinc-800 shadow-2xl z-10"
       >
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Welcome to Shore '26</h1>
-          <p className="text-gray-400">Please select your login type</p>
+          <h1 className="text-3xl font-bold mb-2 uppercase">Welcome to Shore '26</h1>
+          <p className="text-gray-300/50">Please select your login type</p>
         </div>
 
         {!userType ? (
@@ -142,7 +156,7 @@ export default function LoginPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <button 
+            <button
               onClick={() => setUserType(null)}
               className="text-sm text-gray-500 hover:text-white mb-6 flex items-center gap-2"
             >
@@ -181,8 +195,8 @@ export default function LoginPage() {
                   {loading ? "Logging in..." : "Login"}
                 </button>
                 <div className="text-center mt-4">
-                    <p className="text-sm text-gray-500">Already have a profile?</p>
-                    <button type="button" onClick={handleGoogleLogin} className="text-red-400 text-sm hover:underline">Sign in with Google</button>
+                  <p className="text-sm text-gray-500">Already have a profile?</p>
+                  <button type="button" onClick={handleGoogleLogin} className="text-red-400 text-sm hover:underline">Sign in with Google</button>
                 </div>
               </form>
             ) : (

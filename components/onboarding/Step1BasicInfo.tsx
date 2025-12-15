@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MdPerson, MdSchool, MdEmail, MdNumbers, MdBusiness, MdLocationCity, MdCalendarToday } from "react-icons/md";
+import { MdPerson, MdSchool, MdEmail, MdNumbers, MdBusiness, MdLocationCity, MdCalendarToday, MdPhone } from "react-icons/md";
 
-import { createProfileNonGitamite } from "@/lib/api";
+import { createProfileNonGitamite, getProfile } from "@/lib/api";
+import { getToken } from "firebase/messaging";
+import { messaging } from "@/lib/firebase";
 
 export default function Step1BasicInfo() {
   const router = useRouter();
@@ -15,6 +17,7 @@ export default function Step1BasicInfo() {
     department: "",
     campus: "",
     year: "",
+    phone_number: "",
     email: "",
     role_slug: "guest", // Default or derived
   });
@@ -23,13 +26,22 @@ export default function Step1BasicInfo() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+
+  useEffect(() => {
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        console.log('Notification permission granted.');
+      }
+    });
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const uid = sessionStorage.getItem("onboarding_uid");
     if (!uid) {
-        alert("Session expired. Please login again.");
-        router.push("/login");
-        return;
+      alert("Session expired. Please login again.");
+      router.push("/login");
+      return;
     }
 
     try {
@@ -42,17 +54,45 @@ export default function Step1BasicInfo() {
         department: formData.department,
         campus: formData.campus,
         year: formData.year,
-        display_picture: "", // TODO: Add DP upload if needed in Step 1
-        role_slug: formData.role_slug,
+        phone_number: formData.phone_number,
+        display_picture: "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png", // TODO: Add DP upload if needed in Step 1
+        role_slug: "attendee",
+        fcm_token: await getToken(messaging, { vapidKey: "BATu1uBPbu0PNys6M8PDNKpg70QwedX6XmYDCID1pcJQSWOTbld1BqCafSodMdlK3X5KFv2UdXiS55CB1S_wzNQ" }), // TODO: Add FCM token if needed in Step 1
       });
       console.log("Step 1 Data Saved:", response);
-      
+
       router.push("/onboarding?step=2");
     } catch (error) {
       console.error("Failed to save profile", error);
       alert("Failed to save profile. Please try again.");
     }
   };
+
+  useEffect(() => {
+    const uid = sessionStorage.getItem("onboarding_uid");
+    if (!uid) {
+      alert("Session expired. Please login again.");
+      router.push("/login");
+      return;
+    }
+
+    getProfile(uid).then((profile) => {
+      console.log("Profile:", profile);
+      if (profile.status && profile.data) {
+        setFormData({
+          name: profile.data.name,
+          rollNumber: profile.data.roll_number,
+          institution: profile.data.institution,
+          department: profile.data.department,
+          campus: profile.data.campus,
+          year: profile.data.year,
+          phone_number: profile.data.phone_number,
+          email: profile.data.email,
+          role_slug: profile.data.role_slug,
+        });
+      }
+    });
+  }, []);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -73,6 +113,17 @@ export default function Step1BasicInfo() {
             name="email"
             type="email"
             value={formData.email}
+            onChange={handleChange}
+            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
+            required
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-sm text-gray-400 flex items-center gap-2"><MdPhone /> Phone</label>
+          <input
+            name="phone_number"
+            type="tel"
+            value={formData.phone_number}
             onChange={handleChange}
             className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
             required
@@ -136,7 +187,7 @@ export default function Step1BasicInfo() {
           </select>
         </div>
       </div>
-      
+
       <div className="pt-4">
         <button
           type="submit"

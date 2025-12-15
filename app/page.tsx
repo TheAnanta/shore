@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import LandingSection from "./sections/LandingSection";
 import AnnouncementBar from "./sections/AnnouncementsBar";
@@ -10,16 +11,23 @@ import FAQSection from "./sections/FAQSection";
 import MemoriesSection from "./sections/MemoriesSection";
 import HostsSection from "./sections/HostsSection";
 import Footer from "./sections/Footer";
-import LaunchCurtain from "./components/LaunchCurtain";
+import { useEffect } from "react";
 
 export default function Home() {
+
+  useEffect(() => {
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        console.log('Notification permission granted.');
+      }
+    });
+  }, []);
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
-      <LaunchCurtain />
       <main className="flex min-h-screen w-full flex-col items-center justify-between bg-white dark:bg-black sm:items-start">
         <LandingSection />
-        <AnnouncementBar/>
-        <AboutShoreSection/>
+        <AnnouncementBar />
+        <AboutShoreSection />
         <UnityInDiversity />
         <StatsSection />
         <PartnersSection />
