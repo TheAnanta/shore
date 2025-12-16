@@ -104,3 +104,58 @@ export async function updateDisplayPicture(uid: string, url: string) {
     }
     return response.json();
 }
+
+export async function getEvents() {
+    const response = await fetch(`${BASE_URL}/events`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to fetch events");
+    }
+    return response.json();
+}
+
+export async function getEvent(slug: string) {
+    const response = await fetch(`${BASE_URL}/events/${slug}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to fetch event");
+    }
+    return response.json();
+}
+
+export async function registerForEvent(eventId: string, formData: any) {
+    const response = await fetch(`${BASE_URL}/registrations/register`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${await auth.currentUser?.getIdToken()}`
+        },
+        body: JSON.stringify({ event_id: eventId, form_data: formData }),
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to register for event");
+    }
+    return response.json();
+}
+
+export async function getMyTicket() {
+    const response = await fetch(`${BASE_URL}/tickets/my-ticket`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${await auth.currentUser?.getIdToken()}`
+        },
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to fetch ticket");
+    }
+    return response.json();
+}

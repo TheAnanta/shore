@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaMapMarkerAlt, FaClock, FaFilter, FaSearch } from "react-icons/fa";
 import { IoMdFootball, IoMdMusicalNote, IoMdFitness, IoMdBrush } from "react-icons/io";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 // --- Types ---
 
-type EventCategory = "Sports" | "Wellness" | "Cultural" | "Workshops" | "Pro-Shows";
+type EventCategory = "Sports" | "Wellness" | "Cultural" | "Workshops" | "Pro Night" | "Technical" | "Management";
 
 interface Event {
     id: string;
@@ -76,7 +77,7 @@ const EVENTS: Event[] = [
         day: "Day 1",
         date: "Feb 14",
         venue: "Main Stage",
-        category: "Pro-Shows",
+        category: "Pro Night",
     },
 
     // Day 2
@@ -150,12 +151,12 @@ const EVENTS: Event[] = [
         day: "Day 3",
         date: "Feb 16",
         venue: "Main Stage",
-        category: "Pro-Shows",
+        category: "Pro Night",
     },
 ];
 
 const DAYS = ["Day 1", "Day 2", "Day 3"];
-const CATEGORIES: EventCategory[] = ["Sports", "Wellness", "Cultural", "Workshops", "Pro-Shows"];
+const CATEGORIES: EventCategory[] = ["Sports", "Wellness", "Cultural", "Workshops", "Pro Night"];
 const VENUES = Array.from(new Set(EVENTS.map((e) => e.venue)));
 
 // --- Components ---
@@ -170,18 +171,27 @@ const CategoryIcon = ({ category }: { category: EventCategory }) => {
             return <IoMdMusicalNote />;
         case "Workshops":
             return <IoMdBrush />;
-        case "Pro-Shows":
+        case "Pro Night":
             return <IoMdMusicalNote />;
         default:
             return <IoMdMusicalNote />;
     }
 };
 
+
 export default function SchedulePage() {
     const [selectedDay, setSelectedDay] = useState<string>("Day 1");
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [selectedVenue, setSelectedVenue] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const searchQuery = searchParams.get("q");
+        if (searchQuery) {
+            setSelectedCategory(searchQuery);
+        }
+    }, [searchParams]);
 
     const filteredEvents = useMemo(() => {
         return EVENTS.filter((event) => {
@@ -304,9 +314,8 @@ export default function SchedulePage() {
                     <AnimatePresence mode="popLayout">
                         {filteredEvents.length > 0 ? (
                             filteredEvents.map((event) => (
-                                <Link href="/login">
+                                <Link key={event.id} href="/login">
                                     <motion.div
-                                        key={event.id}
                                         layout
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
@@ -330,13 +339,14 @@ export default function SchedulePage() {
                                             <div className="flex-grow space-y-2">
                                                 <div className="flex flex-wrap items-center gap-3 mb-2">
                                                     <span className={cn(
-                                                        "px-3 py-1 rounded-full text-xs font-medium border",
+                                                        "px-3 flex gap-2 items-center py-1 rounded-full text-xs font-medium border",
                                                         event.category === "Sports" && "bg-blue-500/10 border-blue-500/20 text-blue-400",
                                                         event.category === "Wellness" && "bg-green-500/10 border-green-500/20 text-green-400",
                                                         event.category === "Cultural" && "bg-purple-500/10 border-purple-500/20 text-purple-400",
                                                         event.category === "Workshops" && "bg-yellow-500/10 border-yellow-500/20 text-yellow-400",
-                                                        event.category === "Pro-Shows" && "bg-red-500/10 border-red-500/20 text-red-400",
+                                                        event.category === "Pro Night" && "bg-red-500/10 border-red-500/20 text-red-400",
                                                     )}>
+                                                        {<CategoryIcon category={event.category} />}
                                                         {event.category}
                                                     </span>
                                                 </div>

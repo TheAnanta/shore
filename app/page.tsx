@@ -34,7 +34,7 @@ export default function Home() {
         <WhatToExpect />
         <FAQSection />
         <MemoriesSection />
-        <HostsSection />
+        {/* <HostsSection /> */}
         <Footer />
       </main>
     </div>

@@ -5,10 +5,32 @@
   src: url('/fonts/NexaRegular.otf');
 }
 
-.toastBody {
-  font-family: "NexaRegular", sans-serif;
-  color: #10171D;
-  font-size: 0.875rem !important;
+/* Remove default blocky shadow and background */
+.Toastify__toast {
+  background: rgba(30, 30, 30, 0.75) !important; /* Semi-transparent dark */
+  backdrop-filter: blur(12px) !important;       /* Blur effect behind */
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important; /* Subtle border */
+  border-radius: 12px !important;               /* More rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important; /* Softer shadow */
+  color: #fff !important;
+  font-family: "NexaRegular", sans-serif !important; /* Ensure clean font */
+}
+
+/* Override the internal font family */
+.Toastify__toast-body {
+  font-family: 'NexaRegular', sans-serif !important; /* Replace with your font */
+}
+
+/* Fix the close button position and color */
+.Toastify__close-button {
+  color: rgba(255, 255, 255, 0.5) !important;
+  align-self: center !important;
+}
+
+/* Optional: Make the icon color pop */
+.Toastify__toast-icon svg {
+  fill: #ff4b4b !important; /* Bright red for errors */
 }
 
 :root {
@@ -17,6 +39,12 @@
   --red-500: #B62507;
   --yellow-500: #F5A41C;
   --orange-500: #F9781C;
+  --toastify-font-family: "NexaRegular" !important;
+}
+
+*{
+
+  font-family: "NexaRegular", Gellix, sans-serif;
 }
 
 @theme inline {

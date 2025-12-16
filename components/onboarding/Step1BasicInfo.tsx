@@ -6,7 +6,8 @@ import { MdPerson, MdSchool, MdEmail, MdNumbers, MdBusiness, MdLocationCity, MdC
 
 import { createProfileNonGitamite, getProfile } from "@/lib/api";
 import { getToken } from "firebase/messaging";
-import { messaging } from "@/lib/firebase";
+import { auth, messaging } from "@/lib/firebase";
+import { toast } from "react-toastify";
 
 export default function Step1BasicInfo() {
   const router = useRouter();
@@ -62,35 +63,47 @@ export default function Step1BasicInfo() {
       console.log("Step 1 Data Saved:", response);
 
       router.push("/onboarding?step=2");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to save profile", error);
-      alert("Failed to save profile. Please try again.");
+      toast.error(error.message || "Failed to save profile. Please try again.", {
+        hideProgressBar: true
+      });
     }
   };
 
   useEffect(() => {
-    const uid = sessionStorage.getItem("onboarding_uid");
-    if (!uid) {
-      alert("Session expired. Please login again.");
-      router.push("/login");
-      return;
-    }
-
-    getProfile(uid).then((profile) => {
-      console.log("Profile:", profile);
-      if (profile.status && profile.data) {
-        setFormData({
-          name: profile.data.name,
-          rollNumber: profile.data.roll_number,
-          institution: profile.data.institution,
-          department: profile.data.department,
-          campus: profile.data.campus,
-          year: profile.data.year,
-          phone_number: profile.data.phone_number,
-          email: profile.data.email,
-          role_slug: profile.data.role_slug,
+    const fetchProfile = async () => {
+      await auth.authStateReady();
+      const uid = auth.currentUser?.uid;
+      if (!uid) {
+        toast.error("Session expired. Please login again.", {
+          hideProgressBar: true
         });
+        router.push("/login");
+        return;
       }
+      await getProfile(uid).then((profile) => {
+        console.log("Profile:", profile);
+        if (profile.status && profile.data) {
+          setFormData({
+            name: profile.data.name,
+            rollNumber: profile.data.roll_number,
+            institution: profile.data.institution,
+            department: profile.data.department,
+            campus: profile.data.campus,
+            year: profile.data.year,
+            phone_number: profile.data.phone_number,
+            email: profile.data.email,
+            role_slug: profile.data.role_slug,
+          });
+        }
+      });
+    }
+    fetchProfile().catch((error) => {
+      console.error("Failed to get profile", error);
+      toast.error(error.message || "Google login failed. Please try again.", {
+        hideProgressBar: true
+      });
     });
   }, []);
 
@@ -103,7 +116,7 @@ export default function Step1BasicInfo() {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
+            className="w-full bg-zinc-800/50 border border-zinc-700/40 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
             required
           />
         </div>
@@ -114,7 +127,7 @@ export default function Step1BasicInfo() {
             type="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
+            className="w-full bg-zinc-800/50 border border-zinc-700/40 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
             required
           />
         </div>
@@ -125,7 +138,7 @@ export default function Step1BasicInfo() {
             type="tel"
             value={formData.phone_number}
             onChange={handleChange}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
+            className="w-full bg-zinc-800/50 border border-zinc-700/40 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
             required
           />
         </div>
@@ -135,7 +148,7 @@ export default function Step1BasicInfo() {
             name="rollNumber"
             value={formData.rollNumber}
             onChange={handleChange}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
+            className="w-full bg-zinc-800/50 border border-zinc-700/40 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
             required
           />
         </div>
@@ -145,7 +158,7 @@ export default function Step1BasicInfo() {
             name="institution"
             value={formData.institution}
             onChange={handleChange}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
+            className="w-full bg-zinc-800/50 border border-zinc-700/40 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
             required
           />
         </div>
@@ -155,7 +168,7 @@ export default function Step1BasicInfo() {
             name="department"
             value={formData.department}
             onChange={handleChange}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
+            className="w-full bg-zinc-800/50 border border-zinc-700/40 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
             required
           />
         </div>
@@ -165,7 +178,7 @@ export default function Step1BasicInfo() {
             name="campus"
             value={formData.campus}
             onChange={handleChange}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
+            className="w-full bg-zinc-800/50 border border-zinc-700/40 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors"
             required
           />
         </div>
@@ -175,7 +188,7 @@ export default function Step1BasicInfo() {
             name="year"
             value={formData.year}
             onChange={handleChange}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors appearance-none"
+            className="w-full bg-zinc-800/50 border border-zinc-700/40 rounded-lg px-4 py-3 focus:outline-none focus:border-red-500 transition-colors appearance-none"
             required
           >
             <option value="">Select Year</option>
@@ -191,7 +204,7 @@ export default function Step1BasicInfo() {
       <div className="pt-4">
         <button
           type="submit"
-          className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-colors"
+          className="w-full bg-red-700/90 hover:bg-red-800 text-white font-bold py-3 rounded-lg transition-colors"
         >
           Save & Next
         </button>

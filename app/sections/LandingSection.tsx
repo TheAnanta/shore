@@ -1,8 +1,10 @@
 'use client';
 
+import { useAuthContext } from "@/context/AuthContext";
 import Link from "next/link";
 
 export default function LandingSection() {
+    const user = useAuthContext();
     return <section style={{
         backgroundColor: 'var(--red-500)',
         width: '100%',
@@ -59,7 +61,7 @@ export default function LandingSection() {
         <div className="z-10 relative flex flex-col items-center justify-center">
             <div className="flex gap-4 mt-6 md:hidden ml-auto mr-4">
                 <Link href={'/schedule'} className="text-white px-6 py-3 font-bold rounded-full text-sm bg-white/10 border-white/50 border">Schedule</Link>
-                <Link href={'/login'} className="text-white px-6 py-3 font-bold rounded-full text-sm bg-white/20 border-white border">Login</Link>
+                {user ? <Link href={'/dashboard'} className="text-white px-6 py-3 font-bold rounded-full text-sm bg-white/20 border-white border">Dashboard</Link> : <Link href={'/login'} className="text-white px-6 py-3 font-bold rounded-full text-sm bg-white/20 border-white border">Login</Link>}
             </div>
 
             <div className="flex w-full h-12 mt-4 mb-6 md:my-4 px-6 md:px-8 items-center">
@@ -67,7 +69,7 @@ export default function LandingSection() {
                 <div className="w-full" />
                 <img className="h-12" src={'/images/gitam-partners-logos.svg'} />
                 <Link href={'/schedule'} className="hidden md:block text-white px-8 py-3 font-bold rounded-full ml-4 text-sm bg-white/10 hover:bg-white/20 border-white/50 border transition-colors">Schedule</Link>
-                <Link href={'/login'} className="hidden md:block text-white px-8 py-3 font-bold rounded-full ml-4 text-sm bg-white/20 border-white border">Login</Link>
+                {user ? <Link href={'/dashboard'} className="hidden md:block text-white px-8 py-3 font-bold rounded-full ml-4 text-sm bg-white/20 border-white border">Dashboard</Link> : <Link href={'/login'} className="hidden md:block text-white px-8 py-3 font-bold rounded-full ml-4 text-sm bg-white/20 border-white border">Login</Link>}
             </div>
             <h3 className="mt-20 md:mt-6 text-[1rem] md:text-2xl font-extrabold uppercase text-white">Vizag's Biggest Student Fest</h3>
             <img src="/images/landing/shore-logo.svg" loading="eager" fetchPriority="high" className="lg:h-[45vh] h-auto px-6 lg:px-[unset]" />
