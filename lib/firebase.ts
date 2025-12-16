@@ -18,12 +18,12 @@ const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-let messaging;
+let messaging: any;
 
 if (typeof window !== 'undefined' && 'Notification' in window) {
     try {
         messaging = getMessaging(app);
-        
+
     } catch (err) {
         console.error("Firebase messaging error:", err);
     }
