@@ -1,7 +1,31 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
+
+const useKeyPress = (targetKey: string, callback: () => void) => {
+  const handleKeyPress = useCallback((event: { key: string; }) => {
+    if (event.key === targetKey) {
+      callback();
+    }
+  }, [targetKey, callback]);
+
+  useEffect(() => {
+    // Attach the event listener to the document
+    document.addEventListener('keydown', handleKeyPress);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [handleKeyPress]);
+}
 
 export default function AboutShoreSection() {
+  const [showVideoOverlay, setShowVideoOverlay] = useState(false);
+  useKeyPress("Escape", () => {
+    setShowVideoOverlay(false);
+  });
   return (
     <section id="about-shore" className="w-full bg-black py-20 text-white relative overflow-hidden">
       <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center">
@@ -21,7 +45,7 @@ export default function AboutShoreSection() {
             <Link href="/login" className="px-8 py-3 bg-white text-black font-bold uppercase hover:bg-gray-200 transition-colors rounded-full">
               Buy Tickets
             </Link>
-            <button className="px-8 py-3 border border-white text-white font-bold uppercase hover:bg-white/10 transition-colors rounded-full">
+            <button onClick={() => setShowVideoOverlay(true)} className="px-8 py-3 border border-white text-white font-bold uppercase hover:bg-white/10 transition-colors rounded-full">
               Watch Video
             </button>
           </div>
@@ -52,6 +76,16 @@ export default function AboutShoreSection() {
       {/* bg-[#0a192f] */}
       <div className="absolute md:-bottom-18 -bottom-24 -right-8 md:right-0 w-[60%] md:w-[30%] h-28 bg-[#0a192f] transform skew-y-8 origin-bottom-right"></div>
       <div className="absolute -bottom-12 md:bottom-0 -left-18 md:left-0 w-[70%] h-24 bg-[#0a192f] transform -skew-y-5 origin-bottom-right"></div>
+      {
+        showVideoOverlay && (
+          <div className="fixed inset-0 bg-[#161616]/40 bg-opacity-50 flex items-center justify-center z-50">
+            <div onClick={() => {
+              setShowVideoOverlay(false);
+            }} className="fixed inset-0 bg-[#161616]/40 bg-opacity-50 flex items-center justify-center -z-10"></div>
+            <iframe className=" w-3/4 rounded-3xl border-gray-700/60 border-3" width="1440" height="560" src="https://www.youtube.com/embed/yCc6-IktJxU" title="" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin"></iframe>
+          </div>
+        )
+      }
     </section>
   );
 }

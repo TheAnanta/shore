@@ -27,7 +27,7 @@ export default function EventsPage() {
 
 
     return (
-        <div className="px-6 md:px-12 py-6">
+        <div className="bg-[#090909] text-white px-6 md:px-12 py-6">
             <nav className="p-4 flex justify-between">
                 <div className="flex gap-4 items-center flex-row-reverse w-max">
                     <span className="material-symbols-outlined text-2xl!">menu</span>

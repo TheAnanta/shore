@@ -17,7 +17,7 @@ export default function Footer() {
           <h4 className="font-bold mb-4 uppercase">Quick Links</h4>
           <ul className="space-y-2 text-gray-400">
             <li><Link href="/#about-shore" className="hover:text-white">About</Link></li>
-            <li><Link href="/schedule" className="hover:text-white">Schedule</Link></li>
+            {/* <li><Link href="/schedule" className="hover:text-white">Schedule</Link></li> */}
             <li><Link href="/login" className="hover:text-white">Register</Link></li>
             <li><Link href="/dashboard" className="hover:text-white">My SHORe Dashboard</Link></li>
             <li><Link href="/#partners" className="hover:text-white">Sponsors</Link></li>

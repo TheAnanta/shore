@@ -36,7 +36,7 @@ export async function getProfile(uid: string) {
     });
     if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to get profile");
+        throw error;
     }
     return response.json();
 }

@@ -41,11 +41,11 @@ export default function WhatToExpect() {
             </div>
           ))}
         </div>
-        <div className="mt-12">
+        {/* <div className="mt-12">
           <Link href="/schedule" className="px-8 py-3 bg-black cursor-pointer hover:shadow text-white font-bold uppercase hover:bg-[#B62507] transition-colors rounded-full">
             View All Events
           </Link>
-        </div>
+        </div> */}
       </div>
     </section>
       <section className="w-full bg-black py-20 text-white">

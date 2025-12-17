@@ -60,7 +60,7 @@ export default function LandingSection() {
         }} />
         <div className="z-10 relative flex flex-col items-center justify-center">
             <div className="flex gap-4 mt-6 md:hidden ml-auto mr-4">
-                <Link href={'/schedule'} className="text-white px-6 py-3 font-bold rounded-full text-sm bg-white/10 border-white/50 border">Schedule</Link>
+                {/* <Link href={'/schedule'} className="text-white px-6 py-3 font-bold rounded-full text-sm bg-white/10 border-white/50 border">Schedule</Link> */}
                 {user ? <Link href={'/dashboard'} className="text-white px-6 py-3 font-bold rounded-full text-sm bg-white/20 border-white border">Dashboard</Link> : <Link href={'/login'} className="text-white px-6 py-3 font-bold rounded-full text-sm bg-white/20 border-white border">Login</Link>}
             </div>
 
@@ -68,7 +68,7 @@ export default function LandingSection() {
                 <img className="h-10" src={'/images/gitam-logo.svg'} />
                 <div className="w-full" />
                 <img className="h-12" src={'/images/gitam-partners-logos.svg'} />
-                <Link href={'/schedule'} className="hidden md:block text-white px-8 py-3 font-bold rounded-full ml-4 text-sm bg-white/10 hover:bg-white/20 border-white/50 border transition-colors">Schedule</Link>
+                {/* <Link href={'/schedule'} className="hidden md:block text-white px-8 py-3 font-bold rounded-full ml-4 text-sm bg-white/10 hover:bg-white/20 border-white/50 border transition-colors">Schedule</Link> */}
                 {user ? <Link href={'/dashboard'} className="hidden md:block text-white px-8 py-3 font-bold rounded-full ml-4 text-sm bg-white/20 border-white border">Dashboard</Link> : <Link href={'/login'} className="hidden md:block text-white px-8 py-3 font-bold rounded-full ml-4 text-sm bg-white/20 border-white border">Login</Link>}
             </div>
             <h3 className="mt-20 md:mt-6 text-[1rem] md:text-2xl font-extrabold uppercase text-white">Vizag's Biggest Student Fest</h3>

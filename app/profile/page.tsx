@@ -40,14 +40,8 @@ export default function ProfilePage() {
         <div className="px-6 md:px-12 py-6">
             <nav className="p-4 flex justify-between">
                 <div className="flex gap-4 items-center flex-row-reverse w-max">
-                    <span className="material-symbols-outlined text-2xl!">menu</span>
-                    <SignInButton />
-                </div>
-                <div className="flex items-center">
-                    <Link href="/" className="absolute right-40">
-                        <img src="/badge.png" className="h-16" />
-                    </Link>
-                    <img src="/theananta.png" className="h-8 mr-3" />
+                    <Link href={"/dashboard"}><span className="material-symbols-outlined text-2xl!">arrow_back</span></Link>
+                    {/* <SignInButton /> */}
                 </div>
             </nav>
             <main className="mt-12 md:px-4 gap-8 relative flex flex-col items-center">
@@ -58,7 +52,7 @@ export default function ProfilePage() {
                     <h2 className="text-2xl leading-0 mt-6 font-bold">{user.displayName}</h2>
                     <p className="text-white/50">{user.email}</p>
 
-                    <div className="w-full h-px bg-gray-200 my-4"></div>
+                    <div className="w-full h-px bg-white/20 my-4"></div>
 
                     {loading ? (
                         <Loader />

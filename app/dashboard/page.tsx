@@ -33,6 +33,10 @@ function ProfileCard() {
       });
     }
     fetchProfile().catch((error) => {
+      if (error.error_code === 'auth/user-not-found') {
+        router.push("/onboarding?step=1");
+        return;
+      }
       console.error("Failed to get profile", error);
       toast.error(error.message || "Google login failed. Please try again.", {
         hideProgressBar: true
@@ -159,7 +163,7 @@ export default function DashboardPage() {
             <p className="text-gray-400 text-sm text-center">No active tickets found.<br />You can purchase tickets from below.</p>
           </div>
         </div>
-        <section className="w-full bg-black py-10 text-white">
+        <section className="w-full py-10 text-white">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {items.filter((e) => e.q && e.q == 'Pro Night').map((item, index) => (
