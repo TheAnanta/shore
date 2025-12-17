@@ -12,13 +12,18 @@ import MemoriesSection from "./sections/MemoriesSection";
 import HostsSection from "./sections/HostsSection";
 import Footer from "./sections/Footer";
 import { useEffect } from "react";
+import { isSupported } from "firebase/messaging";
 
 export default function Home() {
 
   useEffect(() => {
-    Notification.requestPermission().then((permission) => {
-      if (permission === 'granted') {
-        console.log('Notification permission granted.');
+    isSupported().then((supported) => {
+      if (supported) {
+        Notification.requestPermission().then((permission) => {
+          if (permission === 'granted') {
+            console.log('Notification permission granted.');
+          }
+        });
       }
     });
   }, []);

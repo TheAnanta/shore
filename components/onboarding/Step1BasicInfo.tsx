@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { MdPerson, MdSchool, MdEmail, MdNumbers, MdBusiness, MdLocationCity, MdCalendarToday, MdPhone } from "react-icons/md";
 
 import { createProfileNonGitamite, getProfile } from "@/lib/api";
-import { getToken } from "firebase/messaging";
+import { getToken, isSupported } from "firebase/messaging";
 import { auth, messaging } from "@/lib/firebase";
 import { toast } from "react-toastify";
 
@@ -58,7 +58,7 @@ export default function Step1BasicInfo() {
         phone_number: formData.phone_number,
         display_picture: "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png", // TODO: Add DP upload if needed in Step 1
         role_slug: "attendee",
-        fcm_token: await getToken(messaging, { vapidKey: "BATu1uBPbu0PNys6M8PDNKpg70QwedX6XmYDCID1pcJQSWOTbld1BqCafSodMdlK3X5KFv2UdXiS55CB1S_wzNQ" }), // TODO: Add FCM token if needed in Step 1
+        fcm_token: await isSupported() ? await getToken(messaging, { vapidKey: "BATu1uBPbu0PNys6M8PDNKpg70QwedX6XmYDCID1pcJQSWOTbld1BqCafSodMdlK3X5KFv2UdXiS55CB1S_wzNQ" }) : "", // TODO: Add FCM token if needed in Step 1
       });
       console.log("Step 1 Data Saved:", response);
 

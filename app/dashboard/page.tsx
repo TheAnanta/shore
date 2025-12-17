@@ -157,11 +157,11 @@ export default function DashboardPage() {
           </div> */}
 
           {/* Tickets Card */}
-          {/* <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 flex flex-col items-center justify-center">
+          <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 flex flex-col items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" height="72px" viewBox="0 -960 960 960" width="72px" fill="#FFFFFF" className="opacity-20 mb-4"><path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm0-160q17 0 28.5-11.5T520-480q0-17-11.5-28.5T480-520q-17 0-28.5 11.5T440-480q0 17 11.5 28.5T480-440Zm0-160q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm320 440H160q-33 0-56.5-23.5T80-240v-160q33 0 56.5-23.5T160-480q0-33-23.5-56.5T80-560v-160q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v160q-33 0-56.5 23.5T800-480q0 33 23.5 56.5T880-400v160q0 33-23.5 56.5T800-160Zm0-80v-102q-37-22-58.5-58.5T720-480q0-43 21.5-79.5T800-618v-102H160v102q37 22 58.5 58.5T240-480q0 43-21.5 79.5T160-342v102h640ZM480-480Z" /></svg>
             <h2 className="text-xl font-bold mb-2">My Tickets</h2>
             <p className="text-gray-400 text-sm text-center">No active tickets found.<br />You can purchase tickets from below.</p>
-          </div> */}
+          </div>
         </div>
         <section className="w-full py-10 text-white">
           <div className="container mx-auto px-4">
