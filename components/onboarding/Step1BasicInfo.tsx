@@ -29,9 +29,13 @@ export default function Step1BasicInfo() {
 
 
   useEffect(() => {
-    Notification.requestPermission().then((permission) => {
-      if (permission === 'granted') {
-        console.log('Notification permission granted.');
+    isSupported().then((supported) => {
+      if (supported) {
+        Notification.requestPermission().then((permission) => {
+          if (permission === 'granted') {
+            console.log('Notification permission granted.');
+          }
+        });
       }
     });
   }, []);
@@ -58,13 +62,19 @@ export default function Step1BasicInfo() {
         phone_number: formData.phone_number,
         display_picture: "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png", // TODO: Add DP upload if needed in Step 1
         role_slug: "attendee",
-        fcm_token: await isSupported() ? await getToken(messaging, { vapidKey: "BATu1uBPbu0PNys6M8PDNKpg70QwedX6XmYDCID1pcJQSWOTbld1BqCafSodMdlK3X5KFv2UdXiS55CB1S_wzNQ" }) : "", // TODO: Add FCM token if needed in Step 1
+        fcm_token: await isSupported() ? Notification.permission === 'granted' ? await getToken(messaging, { vapidKey: "BATu1uBPbu0PNys6M8PDNKpg70QwedX6XmYDCID1pcJQSWOTbld1BqCafSodMdlK3X5KFv2UdXiS55CB1S_wzNQ" }) : "" : "", // TODO: Add FCM token if needed in Step 1
       });
       console.log("Step 1 Data Saved:", response);
 
       router.push("/onboarding?step=2");
     } catch (error: any) {
       console.error("Failed to save profile", error);
+      if (error.code === 'messaging/permission-blocked') {
+        toast.error("Notification permission blocked. Please allow notifications.", {
+          hideProgressBar: true
+        });
+        return;
+      }
       toast.error(error.message || "Failed to save profile. Please try again.", {
         hideProgressBar: true
       });
@@ -101,9 +111,9 @@ export default function Step1BasicInfo() {
     }
     fetchProfile().catch((error) => {
       console.error("Failed to get profile", error);
-      toast.error(error.message || "Google login failed. Please try again.", {
-        hideProgressBar: true
-      });
+      // toast.error(error.message || "Google login failed. Please try again.", {
+      //   hideProgressBar: true
+      // });
     });
   }, []);
 
@@ -197,6 +207,7 @@ export default function Step1BasicInfo() {
             <option value="3">3rd Year</option>
             <option value="4">4th Year</option>
             <option value="5">5th Year</option>
+            <option value="5">Staff</option>
           </select>
         </div>
       </div>
@@ -204,7 +215,7 @@ export default function Step1BasicInfo() {
       <div className="pt-4">
         <button
           type="submit"
-          className="w-full bg-red-700/90 hover:bg-red-800 text-white font-bold py-3 rounded-lg transition-colors"
+          className="cursor-pointer w-full bg-red-700/90 hover:bg-red-800 text-white font-bold py-3 rounded-lg transition-colors"
         >
           Save & Next
         </button>

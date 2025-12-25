@@ -15,6 +15,20 @@ export async function createProfileNonGitamite(data: any) {
     return response.json();
 }
 
+export async function checkGitamProfile(data: { roll_number: string }) {
+    const response = await fetch(`${BASE_URL}/auth/profile/gitamite/${data.roll_number}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    });
+    if (response.status == 404 && (await response.json()).error_code === 'auth/user-not-found') {
+        return { isLoggedIn: false, email: null }
+    }
+    if (!response.ok) {
+        return { isLoggedIn: null, email: null };
+    }
+    return { isLoggedIn: true, email: (await response.json()).email };
+}
+
 export async function loginGitam(data: { roll_number: string; password?: string; fcm_token?: string }) {
     const response = await fetch(`${BASE_URL}/auth/profile/gitamite`, {
         method: "POST",
@@ -25,7 +39,7 @@ export async function loginGitam(data: { roll_number: string; password?: string;
         const error = await response.json();
         throw new Error(error.message || "Failed to login");
     }
-    return response.json();
+    return await response.json();
 }
 
 export async function getProfile(uid: string) {
@@ -105,8 +119,20 @@ export async function updateDisplayPicture(uid: string, url: string) {
     return response.json();
 }
 
-export async function getEvents() {
-    const response = await fetch(`${BASE_URL}/events`, {
+export async function getEventCategories() {
+    const response = await fetch(`${BASE_URL}/events/category`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to fetch event categories");
+    }
+    return response.json();
+}
+
+export async function getEvents(slug: string | null = null) {
+    const response = await fetch(`${BASE_URL}/events` + (slug ? `?category_id=${slug}` : "?category_id=all"), {
         method: "GET",
         headers: { "Content-Type": "application/json" },
     });
@@ -145,6 +171,22 @@ export async function registerForEvent(eventId: string, formData: any) {
     return response.json();
 }
 
+export async function registerForCombo(eventIds: string[], formData: any) {
+    const response = await fetch(`${BASE_URL}/registrations/combo`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${await auth.currentUser?.getIdToken()}`
+        },
+        body: JSON.stringify({ event_ids: eventIds, form_data: formData }),
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to register for combo");
+    }
+    return response.json();
+}
+
 export async function getMyTicket() {
     const response = await fetch(`${BASE_URL}/tickets/my-ticket`, {
         method: "GET",
@@ -156,6 +198,21 @@ export async function getMyTicket() {
     if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message || "Failed to fetch ticket");
+    }
+    return response.json();
+}
+
+export async function getMyRegistrations() {
+    const response = await fetch(`${BASE_URL}/registrations/my-registrations`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${await auth.currentUser?.getIdToken()}`
+        },
+    });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to fetch registrations");
     }
     return response.json();
 }

@@ -6,6 +6,7 @@ import { MdCameraAlt, MdCheck, MdRefresh } from "react-icons/md";
 
 import { uploadImage } from "@/lib/firebase";
 import { updateSecurityPicture } from "@/lib/api";
+import { toast } from "react-toastify";
 
 export default function Step2SecurityPicture() {
   const router = useRouter();
@@ -74,9 +75,11 @@ export default function Step2SecurityPicture() {
       await updateSecurityPicture(uid, url);
 
       router.push("/onboarding?step=4");
-    } catch (error) {
-      console.error("Failed to upload/update", error);
-      alert("Failed to save. Please try again.");
+    } catch (error: any) {
+      console.error("Failed to upload/validate", error);
+      toast.error(error.message || "Failed to upload/validate. Please try again.", {
+        hideProgressBar: true
+      });
     } finally {
       setUploading(false);
     }

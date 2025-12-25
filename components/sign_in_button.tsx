@@ -7,12 +7,12 @@ export default function SignInButton() {
 
     if (user) {
         return (
-            <Link href="/profile">
+            <Link href="/dashboard">
                 <img
                     src={user.photoURL || "/placeholder-user.jpg"}
                     alt="Profile"
                     referrerPolicy="no-referrer"
-                    className="w-10 h-10 rounded-full border border-gray-300"
+                    className="w-10 h-10 rounded-full"
                 />
             </Link>
         );

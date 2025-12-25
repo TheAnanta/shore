@@ -12,7 +12,7 @@ const firebaseConfig = {
 
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { getMessaging } from "firebase/messaging/sw";
+import { getMessaging, isSupported } from "firebase/messaging/sw";
 
 const app = initializeApp(firebaseConfig);
 export const storage = getStorage(app);
@@ -20,7 +20,7 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 let messaging: any;
 
-if (typeof window !== 'undefined' && 'Notification' in window) {
+if (await isSupported() && typeof window !== 'undefined' && 'Notification' in window) {
     try {
         messaging = getMessaging(app);
 

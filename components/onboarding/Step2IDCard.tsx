@@ -6,6 +6,7 @@ import { MdCloudUpload, MdCheckCircle, MdDelete } from "react-icons/md";
 
 import { uploadImage } from "@/lib/firebase";
 import { updateIdCard } from "@/lib/api";
+import { toast } from "react-toastify";
 
 export default function Step3IDCard() {
   const router = useRouter();
@@ -40,9 +41,11 @@ export default function Step3IDCard() {
       await updateIdCard(uid, url);
 
       router.push("/onboarding?step=3");
-    } catch (error) {
-      console.error("Failed to upload", error);
-      alert("Failed to upload. Please try again.");
+    } catch (error: any) {
+      console.error(error.message || "Failed to verify", error);
+      toast.error(error.message || "Failed to verify. Please try again.", {
+        hideProgressBar: true
+      });
     } finally {
       setUploading(false);
     }

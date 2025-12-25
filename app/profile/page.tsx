@@ -48,7 +48,7 @@ export default function ProfilePage() {
                 <h1 className="text-4xl font-bold">My Profile</h1>
 
                 <div className="flex flex-col items-center gap-4 mt-8 p-8 rounded-2xl shadow-lg border-2 border-zinc-800/60 bg-[#161616] max-w-md w-full">
-                    <img src={user.photoURL || "/placeholder-user.jpg"} className="w-24 h-24 rounded-full" />
+                    <img src={user.photoURL || "/placeholder-user.jpg"} className="w-24 h-24 rounded-full" referrerPolicy="no-referrer" />
                     <h2 className="text-2xl leading-0 mt-6 font-bold">{user.displayName}</h2>
                     <p className="text-white/50">{user.email}</p>
 
@@ -58,7 +58,7 @@ export default function ProfilePage() {
                         <Loader />
                     ) : ticketData ? (
                         <div className="flex flex-col items-center gap-4">
-                            <h3 className="text-xl font-bold text-(--android-primary-color)">Event Pass</h3>
+                            <h3 className="text-xl font-bold text-(--android-primary-color)">Student QR</h3>
                             <div className="bg-white p-4 rounded-xl border-2 border-black">
                                 {/* QR Code Generation */}
                                 {/* We need a QR library. For now, using a placeholder or assuming react-qr-code is installed */}

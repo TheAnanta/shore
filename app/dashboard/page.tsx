@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useAuthContext } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import Loader from "@/components/LoadingAnimation/page";
-import { getProfile } from "@/lib/api";
+import { getEventCategories, getMyRegistrations, getProfile } from "@/lib/api";
 import { toast } from "react-toastify";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
@@ -112,21 +112,104 @@ function ProfileCard() {
   </div>);
 }
 
+function PassesList() {
+  const [registrations, setRegistrations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const options = {
+    day: '2-digit',
+    month: 'short', // 'short' gives 'Jan', 'Feb', etc.
+    year: 'numeric' // 'numeric' gives '2025'
+  };
+
+  useEffect(() => {
+    const fetchRegistrations = async () => {
+      try {
+        await auth.authStateReady();
+        if (auth.currentUser) {
+          const data = await getMyRegistrations();
+          setRegistrations(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch registrations", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRegistrations();
+  }, []);
+
+  if (loading) return <p className="text-gray-400">Loading passes...</p>;
+
+  if (registrations.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" height="72px" viewBox="0 -960 960 960" width="72px" fill="#FFFFFF" className="opacity-20 mb-4"><path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm0-160q17 0 28.5-11.5T520-480q0-17-11.5-28.5T480-520q-17 0-28.5 11.5T440-480q0 17 11.5 28.5T480-440Zm0-160q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm320 440H160q-33 0-56.5-23.5T80-240v-160q33 0 56.5-23.5T160-480q0-33-23.5-56.5T80-560v-160q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v160q-33 0-56.5 23.5T800-480q0 33 23.5 56.5T880-400v160q0 33-23.5 56.5T800-160Zm0-80v-102q-37-22-58.5-58.5T720-480q0-43 21.5-79.5T800-618v-102H160v102q37 22 58.5 58.5T240-480q0 43-21.5 79.5T160-342v102h640ZM480-480Z" /></svg>
+        <h2 className="text-xl font-bold mb-2">My Passes</h2>
+        <p className="text-gray-400 text-sm">No active passes found.<br />You can purchase passes from below.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full flex flex-col gap-4 h-full max-h-[500px] overflow-y-auto pr-2">
+      <h2 className="text-xl font-bold mb-2 sticky top-0 bg-zinc-900 py-2 z-10">My Passes</h2>
+      {registrations.map((reg) => (
+        <Link href={"/profile"} key={reg.id}><div key={reg.id} className="flex gap-4 p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50 hover:border-zinc-600 transition-colors">
+          <div className="w-16 h-16 bg-zinc-700 rounded-lg overflow-hidden shrink-0">
+            {reg.event.banner_image ? (
+              <img src={reg.event.banner_image} alt={reg.event.title} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-zinc-500 text-xs">No Img</div>
+            )}
+          </div>
+          <div className="flex flex-col justify-center flex-1 min-w-0">
+            <h3 className="font-bold truncate" title={reg.event.name}>{reg.event.name}</h3>
+            <div className="flex items-center gap-2 mt-1">
+              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${reg.status === 'REGISTERED' ? 'bg-green-500/20 text-green-400 border border-green-500/20' :
+                reg.status === 'PENDING_PAYMENT' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/20' :
+                  'bg-zinc-700 text-zinc-400'
+                }`}>
+                {reg.status.replace('_', ' ')}
+              </span>
+            </div>
+
+            <span className="text-xs text-zinc-500 mt-2">
+              Purchased on {new Date(reg.created_at).toLocaleDateString('en-IN', (options as any))}
+            </span>
+          </div>
+        </div>
+        </Link>
+      ))}
+    </div>
+  );
+
+
+}
+
 export default function DashboardPage() {
 
   const user = useAuthContext();
   const [loading, setLoading] = useState(true);
-  const items = [
-    { title: "ETHNIC FEST", desc: "Celebrate diverse cultures with traditional music, dance, and food.", img: "/images/past-shore-photos/shore_25_27.jpg" },
-    { title: "PRO NIGHTS", desc: "A night filled with electrifying DJ sets and non-stop dancing.", img: "/images/past-shore-photos/shore_25_34.jpg", q: "Pro Night" },
-    { title: "CELEBRITY MEET", desc: "An exclusive opportunity to interact with celebrity legends.", img: "/images/past-shore-photos/shore_25_22.jpg" },
-    { title: "CULTURAL EXTRAVAGANZA", desc: "Experience the best of dance, music, and art.", img: "/images/past-shore-photos/shore_25_6.jpg", q: "Cultural" },
-    { title: "TECHNICAL TREVOR", desc: "Showcase your technical skills and innovation.", img: "/images/past-shore-photos/shore_25_55.jpg", q: "Technical" },
-    { title: "MANAGEMENT SUMMIT", desc: "Test your management and leadership abilities.", img: "/images/past-shore-photos/categories/management.png", q: "Management" },
-    { title: "WELLNESS WAVE", desc: "Focus on health, wellness and mindfulness.", img: "/images/past-shore-photos/categories/wellness_gemini.png", q: "Wellness" },
-    { title: "SPORTS AVALANCHE", desc: "Compete in various sports and athletic events.", img: "/images/past-shore-photos/shore_25_57.jpg", q: "Sports" },
-    { title: "RECREATIONAL REALM", desc: "Fun and engaging recreational activities for all.", img: "/images/past-shore-photos/shore_25_48.jpg", q: "Wellness" },
-  ];
+  // const items = [
+  //   { title: "ETHNIC FEST", desc: "Celebrate diverse cultures with traditional music, dance, and food.", img: "/images/past-shore-photos/shore_25_27.jpg" },
+  //   { title: "PRO NIGHTS", desc: "A night filled with electrifying DJ sets and non-stop dancing.", img: "/images/past-shore-photos/shore_25_34.jpg", q: "pro-night" },
+  //   { title: "CELEBRITY MEET", desc: "An exclusive opportunity to interact with celebrity legends.", img: "/images/past-shore-photos/shore_25_22.jpg" },
+  //   { title: "CULTURAL EXTRAVAGANZA", desc: "Experience the best of dance, music, and art.", img: "/images/past-shore-photos/shore_25_6.jpg", q: "cultural" },
+  //   { title: "TECHNICAL TREVOR", desc: "Showcase your technical skills and innovation.", img: "/images/past-shore-photos/shore_25_55.jpg", q: "technical" },
+  //   { title: "MANAGEMENT SUMMIT", desc: "Test your management and leadership abilities.", img: "/images/past-shore-photos/categories/management.png", q: "management" },
+  //   { title: "WELLNESS WAVE", desc: "Focus on health, wellness and mindfulness.", img: "/images/past-shore-photos/categories/wellness_gemini.png", q: "wellness" },
+  //   { title: "SPORTS AVALANCHE", desc: "Compete in various sports and athletic events.", img: "/images/past-shore-photos/shore_25_57.jpg", q: "sports" },
+  //   { title: "RECREATIONAL REALM", desc: "Fun and engaging recreational activities for all.", img: "/images/past-shore-photos/shore_25_48.jpg", q: "wellness" },
+  // ];
+  const [categories, setCategories] = useState<any[]>([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const res = await getEventCategories();
+      setCategories(res);
+    };
+    fetchCategories();
+  }, []);
 
   const router = useRouter();
 
@@ -149,28 +232,20 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
           <ProfileCard />
-          {/* Events Card */}
-          {/* <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800">
-            <h2 className="text-xl font-bold mb-4">My Events</h2>
-            <p className="text-gray-400 text-sm mb-4">You haven't registered for any events yet.</p>
-            <button className="text-red-500 hover:text-red-400 font-bold text-sm">Browse Events →</button>
-          </div> */}
 
-          {/* Tickets Card */}
-          <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 flex flex-col items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" height="72px" viewBox="0 -960 960 960" width="72px" fill="#FFFFFF" className="opacity-20 mb-4"><path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm0-160q17 0 28.5-11.5T520-480q0-17-11.5-28.5T480-520q-17 0-28.5 11.5T440-480q0 17 11.5 28.5T480-440Zm0-160q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm320 440H160q-33 0-56.5-23.5T80-240v-160q33 0 56.5-23.5T160-480q0-33-23.5-56.5T80-560v-160q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v160q-33 0-56.5 23.5T800-480q0 33 23.5 56.5T880-400v160q0 33-23.5 56.5T800-160Zm0-80v-102q-37-22-58.5-58.5T720-480q0-43 21.5-79.5T800-618v-102H160v102q37 22 58.5 58.5T240-480q0 43-21.5 79.5T160-342v102h640ZM480-480Z" /></svg>
-            <h2 className="text-xl font-bold mb-2">My Tickets</h2>
-            <p className="text-gray-400 text-sm text-center">No active tickets found.<br />You can purchase tickets from below.</p>
+          {/* Passes Card */}
+          <div className="bg-zinc-900 p-6 rounded-xl border border-zinc-800 flex flex-col items-center justify-center min-h-[300px]">
+            <PassesList />
           </div>
         </div>
         <section className="w-full py-10 text-white">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {items.filter((e) => e.q && e.q == 'Pro Night').map((item, index) => (
-                <Link aria-disabled={!item.q} href={`/events?q=` + item.q} key={index} className={!item.q ? 'pointer-events-none' : 'cursor-pointer'}>
+              {categories.filter((e) => e.slug).map((item, index) => (
+                <Link aria-disabled={!item.slug} href={`/events?q=` + item.slug} key={index} className={!item.slug ? 'pointer-events-none' : 'cursor-pointer'}>
                   <div className="relative h-64 w-full bg-gray-200 mb-4 overflow-hidden rounded-2xl">
                     <div className="absolute inset-0 flex items-center justify-center text-gray-400 overflow-hidden group-hover:scale-105 transition-transform duration-300">
-                      <Image width={512} height={512} src={item.img} alt={item.title} className="w-full h-full object-cover" />
+                      <Image width={512} height={512} src={item.photo_url} alt={item.name} className="w-full h-full object-cover" />
                     </div>
                     <div className="absolute flex items-center gap-2 top-4 right-4 bg-black/50 p-2 px-4 rounded-full transition-opacity">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -178,9 +253,9 @@ export default function DashboardPage() {
                       </svg>
                       <p className="font-bold text-sm">Buy Pass</p>
                     </div>
-                    <div className="absolute bottom-0 p-6 pt-16 bg-linear-to-t from-black to-transparent">
-                      <h3 className="text-xl font-bold uppercase mb-1">{item.title}</h3>
-                      <p className="text-sm text-gray-300/80">{item.desc}</p>
+                    <div className="absolute bottom-0 p-6 pt-16 bg-linear-to-t from-black to-transparent w-full">
+                      <h3 className="text-xl font-bold uppercase mb-1">{item.name}</h3>
+                      <p className="text-sm text-gray-300/80">{item.description}</p>
                     </div>
                   </div>
 
