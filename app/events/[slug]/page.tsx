@@ -5,7 +5,7 @@ import Link from "next/link";
 import Loader from "@/components/LoadingAnimation/page";
 import SignInButton from "@/components/sign_in_button";
 import { useAuthContext } from "@/context/AuthContext";
-import { getEvent, getEvents, registerForEvent } from "@/lib/api";
+import { getEvent, getEvents, getProfile, registerForEvent } from "@/lib/api";
 import { toast } from "react-toastify";
 
 import FormRenderer from "@/components/form-renderer";
@@ -25,10 +25,20 @@ export default function EventPage() {
     const [showComboSelection, setShowComboSelection] = useState(false);
     const [showComboRegistration, setShowComboRegistration] = useState(false);
     const [comboEvents, setComboEvents] = useState<any[]>([]);
+    const [userProfile, setUserProfile] = useState<any>(null);
 
 
     const [allEvents, setEvents] = useState<any>(null);
     const q_slug = eventData?.category?.slug;
+
+    useEffect(() => {
+        if (user?.uid) {
+            getProfile(user.uid).then(res => {
+                if (res.status && res.data) setUserProfile(res.data);
+            }).catch(err => console.error("Failed to fetch profile", err));
+        }
+    }, [user]);
+
     useEffect(() => {
         async function fetchEvents(slug: string | null) {
             try {
@@ -177,15 +187,7 @@ export default function EventPage() {
                                         __html: eventData.description,
                                     }}
                                 ></p>
-                                {eventData.rulebook_html && (
-                                    <div className="mt-8">
-                                        <h3 className="text-2xl font-bold mb-4">Rulebook</h3>
-                                        <div
-                                            className="prose prose-invert max-w-[48ch]"
-                                            dangerouslySetInnerHTML={{ __html: eventData.rulebook_html }}
-                                        />
-                                    </div>
-                                )}
+
                             </div>
                             <button
                                 onClick={handleRegisterClick}
@@ -194,7 +196,15 @@ export default function EventPage() {
                             >
                                 {registering ? "Registering..." : "Register Now"}
                             </button>
-                        </div>
+                        </div>{eventData.rulebook_html && (
+                            <div className="mt-8">
+                                <h3 className="text-2xl font-bold mb-4">Rulebook</h3>
+                                <div
+                                    className="prose prose-invert max-w-[48ch] rule_book"
+                                    dangerouslySetInnerHTML={{ __html: eventData.rulebook_html }}
+                                />
+                            </div>
+                        )}
 
                         {/* Additional Sections like Organizers, etc. can be added here */}
                         {eventData.event_organizers && eventData.event_organizers.length > 0 && (
@@ -303,10 +313,13 @@ export default function EventPage() {
                         </div>
                         <div className="p-6">
                             <FormRenderer
-                                config={eventData.current_form_version.config}
+                                config={eventData.current_form_version.config || []}
                                 onSubmit={handleRegistrationSubmit}
                                 isSubmitting={registering}
                                 eventSlug={eventData.slug}
+                                userProfile={userProfile}
+                                minTeamSize={eventData.min_team_size}
+                                maxTeamSize={eventData.max_team_size}
                             />
                         </div>
                     </div>
@@ -317,6 +330,7 @@ export default function EventPage() {
                 <ComboRegistrationModal
                     events={comboEvents}
                     onClose={() => setShowComboRegistration(false)}
+                    userProfile={userProfile}
                 />
             )}
         </div>

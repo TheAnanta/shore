@@ -6,9 +6,10 @@ import { registerForCombo } from "@/lib/api";
 interface ComboRegistrationModalProps {
     events: any[];
     onClose: () => void;
+    userProfile?: any;
 }
 
-export default function ComboRegistrationModal({ events, onClose }: ComboRegistrationModalProps) {
+export default function ComboRegistrationModal({ events, onClose, userProfile }: ComboRegistrationModalProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleRegistrationSubmit = async (formData: any) => {
@@ -34,6 +35,12 @@ export default function ComboRegistrationModal({ events, onClose }: ComboRegistr
     // Assuming both events share the same form config, we use the first one
     const formConfig = events[0]?.current_form_version?.config;
 
+    // Calculate combo constraints
+    // Min team size: Max of all min sizes (must satisfy all)
+    // Max team size: Max of all max sizes (allow larger teams, but restrict participation)
+    const minTeamSize = Math.max(...events.map(e => e.min_team_size || 1));
+    const maxTeamSize = Math.max(...events.map(e => e.max_team_size || 1));
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
             <div className="bg-[#161616] border-2 border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative flex flex-col">
@@ -51,10 +58,14 @@ export default function ComboRegistrationModal({ events, onClose }: ComboRegistr
                 </div>
                 <div className="p-6">
                     <FormRenderer
-                        config={formConfig}
+                        config={formConfig || []}
                         onSubmit={handleRegistrationSubmit}
                         isSubmitting={isSubmitting}
-                        eventSlug={events[0].slug} // Just for context, though it's a combo
+                        eventSlug={events[0].slug} // Just for context
+                        userProfile={userProfile}
+                        minTeamSize={minTeamSize}
+                        maxTeamSize={maxTeamSize}
+                        events={events} // Pass events for combo logic
                     />
                 </div>
             </div>

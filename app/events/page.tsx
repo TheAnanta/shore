@@ -47,7 +47,7 @@ export default function EventsPage() {
         const target = e.target as HTMLElement;
         const button = target.closest("button");
 
-        if (button && button.innerText.includes("Shop Now")) {
+        if (button && button.innerText.includes("Register Now")) {
             e.preventDefault();
             setShowComboSelection(true);
         }

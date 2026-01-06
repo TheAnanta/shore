@@ -66,3 +66,9 @@ body {
   letter-spacing: -0.04em;
   height: 1.2em;
 }
+
+.rule_book ul{
+  margin-left: 1rem;
+  list-style-type: disc;
+  line-height: 300%;
+}

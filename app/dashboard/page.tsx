@@ -155,7 +155,7 @@ function PassesList() {
     <div className="w-full flex flex-col gap-4 h-full max-h-[500px] overflow-y-auto pr-2">
       <h2 className="text-xl font-bold mb-2 sticky top-0 bg-zinc-900 py-2 z-10">My Passes</h2>
       {registrations.map((reg) => (
-        <Link href={"/profile"} key={reg.id}><div key={reg.id} className="flex gap-4 p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50 hover:border-zinc-600 transition-colors">
+        <Link href={reg.status === 'REGISTERED' ? "/profile" : ""} key={reg.id}><div key={reg.id} className="flex gap-4 p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50 hover:border-zinc-600 transition-colors">
           <div className="w-16 h-16 bg-zinc-700 rounded-lg overflow-hidden shrink-0">
             {reg.event.banner_image ? (
               <img src={reg.event.banner_image} alt={reg.event.title} className="w-full h-full object-cover" />

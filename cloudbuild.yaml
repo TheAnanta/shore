@@ -1,0 +1,24 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_BASE_URL=https://api-29410906184.asia-south1.run.app'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyCzhTKanyKde08ptfAa2u6tQ-hyfVbFlvA'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=shore-gitam-2026.firebaseapp.com'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_FIREBASE_PROJECT_ID=shore-gitam-2026'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=shore-gitam-2026.firebasestorage.app'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=29410906184'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_FIREBASE_APP_ID=1:29410906184:web:5d2f49a7e560ff121a487d'
+      - '-t'
+      - 'gcr.io/shore-gitam-2026/frontend'
+      - '.'
+
+images:
+  - 'gcr.io/shore-gitam-2026/frontend'
