@@ -179,7 +179,7 @@ export default function EventPage() {
                                     {eventData.name}
                                 </h1>
                                 <h3 className="mt-2 text-xl max-w-[42ch] font-medium">
-                                    {eventData.venue?.name} | {new Date(eventData.start_time).toLocaleString('en-GB', options as any)}
+                                    {new Date(eventData.start_time).toLocaleString('en-GB', options as any)}
                                 </h3>
                                 <p
                                     className="max-w-[48ch] mt-4"
