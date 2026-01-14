@@ -20,7 +20,7 @@ export default function Step1BasicInfo() {
     year: "",
     phone_number: "",
     email: "",
-    role_slug: "guest", // Default or derived
+    role_slug: "attendee", // Default or derived
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -207,7 +207,8 @@ export default function Step1BasicInfo() {
             <option value="3">3rd Year</option>
             <option value="4">4th Year</option>
             <option value="5">5th Year</option>
-            <option value="5">Staff</option>
+            <option value="alumni">Alumni</option>
+            <option value="staff">Staff</option>
           </select>
         </div>
       </div>
